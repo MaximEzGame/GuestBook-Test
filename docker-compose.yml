@@ -1,0 +1,77 @@
+name: maxtest
+services:
+    web:
+        # platform: linux/amd64 # use only if you have ARM processor, like Apple M1
+        container_name: maxtest_web
+        build:
+            context: .
+            dockerfile: .docker/web.dockerfile
+        working_dir: /var/www
+        volumes:
+            - .:/var/www:cached
+        extra_hosts:
+            - host.docker.internal:host-gateway
+        ports:
+            - 80:80
+        expose:
+            - 9000
+        networks:
+            - maxtestnet
+        depends_on:
+            - database
+            - app
+
+    app:
+        # platform: linux/amd64 # use only if you have ARM processor, like Apple M1
+        container_name: maxtest_app
+        build:
+            context: .
+            dockerfile: .docker/php.dockerfile
+        working_dir: /var/www
+        volumes:
+            - .:/var/www:cached
+        environment:
+            PHP_IDE_CONFIG: "serverName=maxtest-server"
+        extra_hosts:
+            - host.docker.internal:host-gateway
+        networks:
+            - maxtestnet
+
+    database:
+        container_name: maxtest_database
+        platform: linux/amd64
+        image: mysql:8.0.31
+        volumes:
+            - .docker/database:/var/lib/mysql:delegated
+        environment:
+            - "MYSQL_DATABASE=guestbook"
+            - "MYSQL_USER=guestbook"
+            - "MYSQL_PASSWORD=secret"
+            - "MYSQL_ROOT_PASSWORD=secretroot"
+            - "TZ=America/Los_Angeles"
+        ports:
+            - "3306:3306"
+        networks:
+            - maxtestnet
+
+    phpmyadmin:
+        container_name: maxtest_phpmyadmin
+        depends_on:
+            - database
+        image: phpmyadmin/phpmyadmin
+#        restart: always
+        ports:
+            - "${PHPMYADMIN_PORT:-8123}:80"
+        environment:
+            PMA_HOST: database
+            MYSQL_ROOT_PASSWORD: secretroot
+        networks:
+            - maxtestnet
+
+networks: # use `docker network create maxtestnet` to create it and `docker network rm maxtestnet` to remove it
+    maxtestnet:
+        driver: bridge
+
+volumes:
+    dbdata:
+    nodedata:
