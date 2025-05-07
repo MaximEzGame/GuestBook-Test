@@ -1,0 +1,75 @@
+
+
+.container {
+    max-width: 425px;
+}
+
+form {
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    background-color: #fff;
+    padding: 10px 20px;
+}
+
+h1 {
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+textarea {
+    resize: vertical;
+}
+
+.panel-body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.panel-body::before, .panel-body::after {
+    content: none;
+}
+
+.panel-heading {
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+}
+
+.panel {
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08); 
+}
+
+.panel-title {
+    display: flex;
+    justify-content: space-between;
+}
+
+p, small{
+    margin: 0;
+    word-break: break-word;
+}
+
+.edit-btn {
+    margin-top: 10px;
+}
+
+.pagination { 
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+}
+
+#editForm {
+    box-shadow: none;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.modal-header::before, .modal-header::after {
+    content: none;
+}
