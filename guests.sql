@@ -33,7 +33,6 @@ CREATE TABLE `guests` (
   `email` varchar(128) NOT NULL,
   `message` varchar(1024) NOT NULL,
   `time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `author` varchar(128) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --

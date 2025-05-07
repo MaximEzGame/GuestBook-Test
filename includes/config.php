@@ -5,9 +5,9 @@ if (!defined('APP_INDEX')) {
     die();
 }
 
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', '');
+define('DB_HOST', 'database');
+define('DB_USER', 'guestbook');
+define('DB_PASS', 'secret');
 define('DB_NAME', 'guestbook');
 
 define('MESSAGES_PER_PAGE', 10);
