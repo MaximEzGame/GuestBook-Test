@@ -18,58 +18,67 @@ $(document).ready(function () {
     // VALIDATION FOR MAIN FORM -----------------------------------------------------------------------------------------------------------
 
     function validateForm() {
-        let isValid = true;
         $('#nameError, #emailError, #messageError').text('');
-
-        const name = $('#name').val();
+        $('#name, #email, #message').removeClass('input-error');
+    
+        let isValid = true;
+        let name = $('#name').val().trim();
+        let email = $('#email').val().trim();
+        let message = $('#message').val().trim();
+    
         if (name.length < 5 || name.length > 128) {
             $('#nameError').text('Name must be between 5 and 128 characters.');
+            $('#name').addClass('input-error');
             isValid = false;
         }
-
-        const email = $('#email').val();
-        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-        if (!emailRegex.test(email)) {
+    
+        if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
             $('#emailError').text('Please enter a valid email address.');
+            $('#email').addClass('input-error');
             isValid = false;
         }
-
-        const message = $('#message').val();
+    
         if (message.length < 5 || message.length > 1024) {
             $('#messageError').text('Message must be between 5 and 1024 characters.');
+            $('#message').addClass('input-error');
             isValid = false;
         }
-
+    
         return isValid;
     }
 
     // VALIDATION FOR EDIT FORM -----------------------------------------------------------------------------------------------------------
 
     function validateEditForm() {
-        let isValid = true;
         $('#edit_nameError, #edit_emailError, #edit_messageError').text('');
-
-        const name = $('#edit_name').val();
+        $('#edit_name, #edit_email, #edit_message').removeClass('input-error');
+    
+        let isValid = true;
+        let name = $('#edit_name').val().trim();
+        let email = $('#edit_email').val().trim();
+        let message = $('#edit_message').val().trim();
+    
         if (name.length < 5 || name.length > 128) {
             $('#edit_nameError').text('Name must be between 5 and 128 characters.');
+            $('#edit_name').addClass('input-error');
             isValid = false;
         }
-
-        const email = $('#edit_email').val();
-        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-        if (!emailRegex.test(email)) {
+    
+        if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
             $('#edit_emailError').text('Please enter a valid email address.');
+            $('#edit_email').addClass('input-error');
             isValid = false;
         }
-
-        const message = $('#edit_message').val();
+    
         if (message.length < 5 || message.length > 1024) {
             $('#edit_messageError').text('Message must be between 5 and 1024 characters.');
+            $('#edit_message').addClass('input-error');
             isValid = false;
         }
-
+    
         return isValid;
     }
+
 
     // AJAX SUBMIT FOR MAIN FORM -----------------------------------------------------------------------------------------------------------
 
@@ -339,4 +348,41 @@ $(document).ready(function () {
             }
         });
     }
+
+    // CLEAR ERRORS -----------------------------------------------------------------------------------------------------------
+
+    $('#name').on('input', function() {
+        $('#nameError').text('');
+        $('#name').removeClass('input-error');
+    });
+    
+    $('#email').on('input', function() {
+        $('#emailError').text('');
+        $('#email').removeClass('input-error');
+    });
+    
+    $('#message').on('input', function() {
+        $('#messageError').text('');
+        $('#message').removeClass('input-error');
+    });
+    
+    $('#edit_name').on('input', function() {
+        $('#edit_nameError').text('');
+        $('#edit_name').removeClass('input-error');
+    });
+    
+    $('#edit_email').on('input', function() {
+        $('#edit_emailError').text('');
+        $('#edit_email').removeClass('input-error');
+    });
+    
+    $('#edit_message').on('input', function() {
+        $('#edit_messageError').text('');
+        $('#edit_message').removeClass('input-error');
+    });
+
+    $('#guestForm').on('reset', function() {
+        $('#nameError, #emailError, #messageError').text('');
+        $('#name, #email, #message').removeClass('input-error');
+    });
 });

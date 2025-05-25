@@ -25,20 +25,15 @@ function connect()
 
 $conn = connect();
 
-
 session_start();
 if (!isset($_SESSION['posted_messages'])) {
     $_SESSION['posted_messages'] = [];
 }
 
-// SUBMIT BUTTON FUNCTION ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-function submitGuestInfo($conn)
-{
-    date_default_timezone_set('UTC');
-    $name = $_POST['name'] ?? '';
-    $email = $_POST['email'] ?? '';
-    $message = $_POST['message'] ?? '';
+// VALIDATION  ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+function validateGuestInfo($name, $email, $message)
+{
     if (empty($name) || empty($email) || empty($message)) {
         return ['success' => false, 'error' => 'All fields are required.'];
     }
@@ -51,20 +46,27 @@ function submitGuestInfo($conn)
     if (strlen($message) < 5 || strlen($message) > 1024) {
         return ['success' => false, 'error' => 'Message must be between 5 and 1024 characters.'];
     }
+    return ['success' => true];
+}
 
+// INSERT GUEST ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+function insertGuest($conn, $name, $email, $message)
+{
     $pstate = $conn->prepare("INSERT INTO guests (name, email, message) VALUES (?, ?, ?)");
-    if (!$pstate) return ['success' => false, 'error' => 'Prepare failed: ' . $conn->error];
+    if (!$pstate) {
+        return ['success' => false, 'error' => 'Prepare failed: ' . $conn->error];
+    }
     $pstate->bind_param("sss", $name, $email, $message);
     if ($pstate->execute()) {
         $id = $conn->insert_id;
-        $_SESSION['posted_messages'][] = $id;
-        $pstate = $conn->prepare("SELECT time FROM guests WHERE id = ?");
-        $pstate->bind_param("i", $id);
-        $pstate->execute();
-        $result = $pstate->get_result();
+        $pstate2 = $conn->prepare("SELECT time FROM guests WHERE id = ?");
+        $pstate2->bind_param("i", $id);
+        $pstate2->execute();
+        $result = $pstate2->get_result();
         $row = $result->fetch_assoc();
         $time = $row['time'];
-        $pstate->close();
+        $pstate2->close();
         return ['success' => true, 'data' => ['id' => $id, 'name' => $name, 'email' => $email, 'message' => $message, 'time' => $time]];
     } else {
         $error = $pstate->error;
@@ -73,6 +75,48 @@ function submitGuestInfo($conn)
     }
 }
 
+// UPDATE GUEST ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+function updateGuest($conn, $id, $name, $email, $message)
+{
+    $pstate = $conn->prepare("UPDATE guests SET name = ?, email = ?, message = ? WHERE id = ?");
+    $pstate->bind_param("sssi", $name, $email, $message, $id);
+    if ($pstate->execute()) {
+        $pstate->close();
+        return ['success' => true];
+    } else {
+        $error = $pstate->error;
+        $pstate->close();
+        return ['success' => false, 'error' => 'Update failed: ' . $error];
+    }
+}
+
+// HANDLE SUBMIT ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+function handleSubmit($conn)
+{
+    date_default_timezone_set('UTC');
+    $name = $_POST['name'] ?? '';
+    $email = $_POST['email'] ?? '';
+    $message = $_POST['message'] ?? '';
+
+    $validation = validateGuestInfo($name, $email, $message);
+    if (!$validation['success']) {
+        sendResponse($validation);
+    }
+
+    $insertResult = insertGuest($conn, $name, $email, $message);
+    if ($insertResult['success']) {
+        $id = $insertResult['data']['id'];
+        $_SESSION['posted_messages'][] = $id;
+        sendResponse($insertResult);
+    } else {
+        sendResponse($insertResult);
+    }
+}
+
+// SEND RESPONSE ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 function sendResponse($data)
 {
     header('Content-Type: application/json');
@@ -80,13 +124,9 @@ function sendResponse($data)
     exit;
 }
 
-function handleSubmit($conn)
-{
-    $result = submitGuestInfo($conn);
-    sendResponse($result);
-}
+// GET MESSAGES ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-function handleGetMessages($conn, $page)
+function getMessages($conn, $page)
 {
     $limit = MESSAGES_PER_PAGE;
     $offset = ($page - 1) * $limit;
@@ -140,6 +180,7 @@ function handleGetMessages($conn, $page)
     ]);
 }
 
+// HANDLE EDIT ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 function handleEdit($conn, $message_id)
 {
@@ -151,27 +192,15 @@ function handleEdit($conn, $message_id)
     $email = $_POST['email'] ?? '';
     $message = $_POST['message'] ?? '';
 
-    if (empty($name) || empty($email) || empty($message)) {
-        sendResponse(['success' => false, 'error' => 'All fields are required.']);
-    }
-    if (strlen($name) < 5 || strlen($name) > 128) {
-        sendResponse(['success' => false, 'error' => 'Name must be between 5 and 128 characters.']);
-    }
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        sendResponse(['success' => false, 'error' => 'Invalid email address.']);
-    }
-    if (strlen($message) < 5 || strlen($message) > 1024) {
-        sendResponse(['success' => false, 'error' => 'Message must be between 5 and 1024 characters.']);
+    $validation = validateGuestInfo($name, $email, $message);
+    if (!$validation['success']) {
+        sendResponse($validation);
     }
 
-    $pstate = $conn->prepare("UPDATE guests SET name = ?, email = ?, message = ? WHERE id = ?");
-    $pstate->bind_param("sssi", $name, $email, $message, $message_id);
-    if ($pstate->execute()) {
-        $pstate->close();
+    $updateResult = updateGuest($conn, $message_id, $name, $email, $message);
+    if ($updateResult['success']) {
         sendResponse(['success' => true]);
+    } else {
+        sendResponse($updateResult);
     }
-
-    $error = $pstate->error;
-    $pstate->close();
-    sendResponse(['success' => false, 'error' => 'Update failed: ' . $error]);
 }

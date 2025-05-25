@@ -9,7 +9,7 @@ switch ($action) {
         break;
     case 'get_messages':
         $page = isset($_POST['page']) ? (int)$_POST['page'] : 1;
-        handleGetMessages($conn, $page);
+        getMessages($conn, $page);
         break;
     case 'edit':
         $message_id = (int)($_POST['message_id'] ?? 0);

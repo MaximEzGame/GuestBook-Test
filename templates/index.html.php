@@ -16,17 +16,17 @@
         <form id="guestForm" method="post">
             <div class="form-group">
                 <label for="name">Name:</label>
-                <input type="text" id="name" name="name" class="form-control" required>
+                <input type="text" id="name" name="name" class="form-control">
                 <span id="nameError" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label for="email">Email:</label>
-                <input type="email" id="email" name="email" class="form-control" required>
+                <input type="text" id="email" name="email" class="form-control">
                 <span id="emailError" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label for="message">Message:</label>
-                <textarea id="message" name="message" rows="4" class="form-control" required></textarea>
+                <textarea id="message" name="message" rows="4" class="form-control"></textarea>
                 <span id="messageError" class="text-danger"></span>
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
@@ -49,17 +49,17 @@
                         <input type="hidden" id="edit_message_id">
                         <div class="form-group">
                             <label for="edit_name">Name:</label>
-                            <input type="text" id="edit_name" class="form-control" required>
+                            <input type="text" id="edit_name" name="edit_name" class="form-control">
                             <span id="edit_nameError" class="text-danger"></span>
                         </div>
                         <div class="form-group">
                             <label for="edit_email">Email:</label>
-                            <input type="email" id="edit_email" class="form-control" required>
+                            <input type="text" id="edit_email" name="edit_email" class="form-control">
                             <span id="edit_emailError" class="text-danger"></span>
                         </div>
                         <div class="form-group">
                             <label for="edit_message">Message:</label>
-                            <textarea id="edit_message" rows="4" class="form-control" required></textarea>
+                            <textarea id="edit_message" rows="4" name="edit_message" class="form-control"></textarea>
                             <span id="edit_messageError" class="text-danger"></span>
                         </div>
                         <button type="submit" class="btn btn-primary" id="editSubmit" disabled>Submit</button>

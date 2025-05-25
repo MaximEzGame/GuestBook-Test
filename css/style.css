@@ -73,3 +73,7 @@ p, small{
 .modal-header::before, .modal-header::after {
     content: none;
 }
+
+.input-error {
+    border: 2px solid red;
+}
