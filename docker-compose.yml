@@ -48,7 +48,7 @@ services:
             - "MYSQL_USER=guestbook"
             - "MYSQL_PASSWORD=secret"
             - "MYSQL_ROOT_PASSWORD=secretroot"
-            - "TZ=America/Los_Angeles"
+            - "TZ=UTC"
         ports:
             - "3306:3306"
         networks:
