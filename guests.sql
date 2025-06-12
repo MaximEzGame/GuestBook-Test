@@ -27,11 +27,12 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `guests` (
-  `id` int(11) NOT NULL,
-  `name` varchar(128) NOT NULL,
-  `email` varchar(128) NOT NULL,
-  `message` varchar(1024) NOT NULL,
-  `time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(128) NOT NULL CHECK (`name` <> ''),
+  `email` varchar(128) NOT NULL CHECK (`email` <> ''),
+  `message` varchar(1024) NOT NULL CHECK (`message` <> ''),
+  `time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -137,28 +138,3 @@ INSERT INTO `guests` (`id`, `name`, `email`, `message`, `time`) VALUES
 (263, 'Chris Davis', 'chris.davis@gmail.com', 'Thanks for making this, it\'s super user-friendly.', '2025-04-30 05:09:06'),
 (264, 'Michael Harris', 'michael.harris@example.com', 'Amazing experience, will definitely come back!', '2025-05-05 18:45:06'),
 (265, 'Maxim', 'ezgame092@icloud.com', 'Hello there', '2025-05-07 15:22:43');
-
---
--- Индексы сохранённых таблиц
---
-
---
--- Индексы таблицы `guests`
---
-ALTER TABLE `guests`
-  ADD PRIMARY KEY (`id`);
-
---
--- AUTO_INCREMENT для сохранённых таблиц
---
-
---
--- AUTO_INCREMENT для таблицы `guests`
---
-ALTER TABLE `guests`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=266;
-COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

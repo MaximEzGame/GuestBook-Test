@@ -137,12 +137,24 @@ $(document).ready(function () {
     function renderMessages(messages) {
         let html = '';
         messages.forEach(function (msg) {
+            let formattedTime = 'N/A';
+            if (msg.time) {
+                const date = new Date(msg.time + 'Z');
+                formattedTime = date.toLocaleString('ru-RU', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false
+                }).replace(',', '');
+            }
             html += `
                 <div class="panel panel-default" data-id="${msg.id}">
                     <div class="panel-heading">
                         <h3 class="panel-title">
                             <p>${msg.name}</p>
-                            <p><small><time>${msg.time || 'N/A'} UTC</time></small></p>
+                            <p><small><time>${formattedTime}</time></small></p>
                         </h3>
                     </div>
                     <div class="panel-body">
@@ -293,6 +305,8 @@ $(document).ready(function () {
                 handleModalClose($('#edit_message_id').val());
             }
             modalHideReason = null;
+            $('#edit_nameError, #edit_emailError, #edit_messageError').text('');
+            $('#edit_name, #edit_email, #edit_message').removeClass('input-error');
         });
     }
 
